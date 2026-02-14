@@ -34,27 +34,6 @@ Usage:  `./install.sh`  **[OPTIONS...]**
 
 > Bold version suggested use in `High resolution display` like 4k display with 200% scale!
 
-## Linux Mint / Cinnamon Desktop
-
-For Cinnamon Desktop, panel icons require special `xsi-` prefixed symlinks.
-
-**Option 1: Install with automatic fix (Recommended)**
-```bash
-./install.sh --cinnamon-fix
-# or
-./install.sh -c
-```
-
-**Option 2: Apply fix after installation**
-
-If you installed the theme before this fix and panel icons are not showing:
-
-```bash
-./cinnamon-fix.sh
-```
-
-Then restart Cinnamon: Press `Alt+F2`, type `r` and press Enter, or logout and login again.
-
 ## Requirement
 You can use this with:
 

@@ -31,7 +31,6 @@ cat << EOF
     -t, --theme VARIANT     Specify theme color variant(s) [default|purple|pink|red|orange|yellow|green|grey|nord|all] (Default: blue)
     -a, --alternative       Install alternative icons for software center and file-manager
     -b, --bold              Install bolder panel icons version (1.5px size)
-    -c, --cinnamon-fix      Apply Cinnamon Desktop panel icon fix (creates xsi- symlinks)
     -p, --kde-plasma        Replaces Apple logo with KDE Plasma logo.
 
     -r, --remove,
@@ -241,10 +240,6 @@ while [[ "$#" -gt 0 ]]; do
       echo "Installing 'bold' version..."
       shift
       ;;
-    -c|--cinnamon-fix)
-      cinnamon_fix='true'
-      shift
-      ;;
     -p|--kde-plasma)
       plasma='true'
       echo "Replacing Apple logo with KDE Plasma logo..."
@@ -350,21 +345,6 @@ if [[ "${remove}" == 'true' ]]; then
   uninstall_theme
 else
   install_theme
-  
-  # Apply Cinnamon Desktop panel icon fix if requested
-  if [[ "${cinnamon_fix}" == 'true' ]]; then
-    echo ""
-    echo "Applying Cinnamon Desktop panel icon fix..."
-    if [[ -f "${SRC_DIR}/cinnamon-fix.sh" ]]; then
-      if [ "$UID" -eq "$ROOT_UID" ]; then
-        bash "${SRC_DIR}/cinnamon-fix.sh"
-      else
-        bash "${SRC_DIR}/cinnamon-fix.sh"
-      fi
-    else
-      echo "Warning: cinnamon-fix.sh not found in ${SRC_DIR}"
-    fi
-  fi
 fi
 
 #exit 0
