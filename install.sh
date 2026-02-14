@@ -40,6 +40,43 @@ cat << EOF
 EOF
 }
 
+link_xsi_icons() {
+  local theme_dir=${1}
+
+  # Check if system has xsi icons (Linux Mint Cinnamon 22.3+)
+  if [[ ! -d "/usr/share/icons/hicolor/scalable/actions" ]]; then
+    return
+  fi
+
+  local xsi_icons=$(find /usr/share/icons/hicolor/scalable/actions -name "xsi-*-symbolic.svg" -type f 2>/dev/null)
+
+  if [[ -z "${xsi_icons}" ]]; then
+    return
+  fi
+
+  echo "Creating xsi icon symlinks for Linux Mint Cinnamon compatibility..."
+
+  # List of symbolic directories to process
+  local dirs=("actions/symbolic" "status/symbolic" "devices/symbolic" "mimes/symbolic" "places/symbolic")
+
+  for dir in "${dirs[@]}"; do
+    local symbolic_dir="${theme_dir}/${dir}"
+    if [[ -d "${symbolic_dir}" ]]; then
+      while IFS= read -r xsi_icon; do
+        local xsi_basename=$(basename "${xsi_icon}")
+        # Remove 'xsi-' prefix to get the target icon name
+        local target_icon="${xsi_basename#xsi-}"
+
+        # Check if target icon exists in the theme
+        if [[ -f "${symbolic_dir}/${target_icon}" ]]; then
+          # Create symlink from xsi-* to the corresponding icon
+          ln -sf "${target_icon}" "${symbolic_dir}/${xsi_basename}"
+        fi
+      done <<< "${xsi_icons}"
+    fi
+  done
+}
+
 install() {
   local dest=${1}
   local name=${2}
@@ -202,6 +239,9 @@ install() {
     ln -sf preferences preferences@2x
     ln -sf status status@2x
   )
+
+  # Create xsi icon symlinks for Linux Mint Cinnamon 22.3+ compatibility
+  link_xsi_icons "${THEME_DIR}"
 
   gtk-update-icon-cache "${THEME_DIR}"
 }
